@@ -2,12 +2,24 @@ import streamlit as st
 
 st.set_page_config(page_title="Miranda Newswire", page_icon="app/static/favicon.jpg", layout="wide")
 st.markdown("""
-<script>
-tinymce.init({
-  selector: 'stTextArea',
-  menubar: 'file edit view'
-    });
-</script>
+<style>
+    #MainMenu, header {visibility: hidden;}
+    .bg {
+        background-image: linear-gradient(260deg, #002354 0%, #1F4B9E 100%);
+		opacity: 0.95;
+        bottom:0;
+        left:-50%;
+        position:fixed;
+        right:-50%;
+        top:0;
+        z-index:0;
+        background-size: cover;
+        background-position: center center;
+        width: 149%;
+        height: 100%;
+    }
+</style>
+<div class="bg"></div>
 """, unsafe_allow_html=True)
 
 with open("app/static/logo.png", "rb") as image_file:
