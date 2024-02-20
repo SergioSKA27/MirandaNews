@@ -1,8 +1,8 @@
 [theme]
 primaryColor="#002354"
-backgroundColor="#313131"
-secondaryBackgroundColor="#252525"
-textColor="#ECECEC"
+backgroundColor="#ECECEC"
+secondaryBackgroundColor="#E7E7E7"
+textColor="#686868"
 
 [server]
 enableStaticServing = true
