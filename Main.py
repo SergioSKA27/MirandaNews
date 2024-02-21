@@ -209,7 +209,12 @@ if cols[1].button("Preview",use_container_width=True):
         st.divider()
         render_html(style+d, height=400,scrolling=True)
 
-if cols[0].button("Enviar",use_container_width=True,disabled=(empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "" or d is None)):
+
+dis =(empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "" or d is None)
+
+if cols[0].button("Enviar",use_container_width=True,
+help='Enviar el artículo a la plataforma de noticias.' if  not dis else 'Complete los campos para enviar el artículo.',
+disabled=dis):
     dat = datetime.datetime.combine(fecha,hora)
     xml = create_xml(empresa,titulo,dat,idioma,link,dicval[company],action,d)
     today = datetime.date.today().strftime("%a, %d %b %Y %H:%M:%S GMT")
