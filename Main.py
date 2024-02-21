@@ -123,12 +123,15 @@ with open("app/static/logo.png", "rb") as image_file:
     st.image(image_file.read(),width=400)
 
 st.divider()
-empresa = st.selectbox("Empresa:", ["Seleccione","Bloomberg","Refinitiv"])
+
+c1 = st.columns(2)
+empresa = c1[0].selectbox("Empresa:", ["Seleccione","Bloomberg","Refinitiv"])
+idioma = c1[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
 titulo = st.text_input("Título:")
 
 fecha = st.date_input("Fecha:")
 
-idioma = st.selectbox("Idioma:", ["Seleccione","Inglés","Español"])
+
 
 link = st.text_input("Link:")
 
@@ -200,10 +203,8 @@ if cols[1].button("Preview",use_container_width=True):
         st.divider()
         render_html(style+d, height=400,scrolling=True)
 
-if cols[0].button("Enviar",use_container_width=True):
-    if empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "":
-        st.error("Por favor llene todos los campos")
-        st.stop()
+if cols[0].button("Enviar",use_container_width=True,disabled=(empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "" or d is None)):
+
     xml = create_xml(empresa,titulo,fecha,idioma,link,dicval[company],action,d)
     today = datetime.date.today().strftime("%a, %d %b %Y %H:%M:%S GMT")
     st.download_button('Descargar XML', xml, f"newswire_{today.replace(' ','_')}.xml", "xml",use_container_width=True)
