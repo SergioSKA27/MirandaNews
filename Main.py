@@ -127,11 +127,15 @@ st.divider()
 c1 = st.columns(2)
 empresa = c1[0].selectbox("Empresa:", ["Seleccione","Bloomberg","Refinitiv"])
 idioma = c1[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
+
+c2 = st.columns(2)
+
+c3 = st.columns(2)
+fecha = c3[0].date_input("Fecha:")
+
+hora = c3[1].time_input("Hora:")
+
 titulo = st.text_input("Título:")
-
-fecha = st.date_input("Fecha:")
-
-
 
 link = st.text_input("Link:")
 
@@ -175,13 +179,14 @@ dicval = {"Alfa":"MXP000511016:Alfa",
         "Unifin":"MX00UN000002:Unifin",
         "Vinte":"MX01VI050002:Vinte"}
 
-company = st.selectbox("Compañía:", ["Seleccione"]+list(dicval.keys()))
 
-action = st.selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
+company = c2[0].selectbox("Compañía:", ["Seleccione"]+list(dicval.keys()))
+
+action = c2[1].selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
 
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
-height=400,
+height=900,
 initialValue="<p>Hello World</p>",
 toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
 
@@ -204,8 +209,8 @@ if cols[1].button("Preview",use_container_width=True):
         render_html(style+d, height=400,scrolling=True)
 
 if cols[0].button("Enviar",use_container_width=True,disabled=(empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "" or d is None)):
-
-    xml = create_xml(empresa,titulo,fecha,idioma,link,dicval[company],action,d)
+    dat = datetime.datetime.combine(fecha,hora)
+    xml = create_xml(empresa,titulo,dat,idioma,link,dicval[company],action,d)
     today = datetime.date.today().strftime("%a, %d %b %Y %H:%M:%S GMT")
     st.download_button('Descargar XML', xml, f"newswire_{today.replace(' ','_')}.xml", "xml",use_container_width=True)
     st.balloons()
