@@ -2,6 +2,3 @@
 primaryColor="#4190FF"
 backgroundColor="#002354"
 base = "dark"
-
-[server]
-enableStaticServing = true

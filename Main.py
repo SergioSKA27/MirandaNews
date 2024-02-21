@@ -186,7 +186,7 @@ action = c2[1].selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bl
 
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
-height=900,
+height=600,
 initialValue="<p>Hello World</p>",
 toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
 
