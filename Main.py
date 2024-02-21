@@ -126,7 +126,8 @@ st.divider()
 
 c1 = st.columns(2)
 empresa = c1[0].selectbox("Empresa:", ["Seleccione","Bloomberg","Refinitiv"])
-idioma = c1[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
+action = c1[1].selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
+
 
 c2 = st.columns(2)
 
@@ -181,8 +182,8 @@ dicval = {"Alfa":"MXP000511016:Alfa",
 
 
 company = c2[0].selectbox("Compañía:", ["Seleccione"]+list(dicval.keys()))
+idioma = c2[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
 
-action = c2[1].selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
 
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
