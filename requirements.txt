@@ -1,1 +1,2 @@
 st-tiny-editor
+lxml
