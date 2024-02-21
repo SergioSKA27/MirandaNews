@@ -99,10 +99,11 @@ style = """
 
 cols = st.columns([0.8,0.2])
 
-if d is not None and cols[1].button("Preview",use_container_width=True):
-    st.markdown('<h3 style="color: #ffffff;"> Preview </h3>', unsafe_allow_html=True)
-    st.divider()
-    html(style+d, height=400,scrolling=True)
+if cols[1].button("Preview",use_container_width=True):
+    if d is not None and d != "":
+        st.markdown('<h3 style="color: #ffffff;"> Preview </h3>', unsafe_allow_html=True)
+        st.divider()
+        html(style+d, height=400,scrolling=True)
 
 if cols[0].button("Enviar",use_container_width=True):
     pass
