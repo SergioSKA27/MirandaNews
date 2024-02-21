@@ -1,5 +1,6 @@
 import streamlit as st
 from st_tiny_editor import  tiny_editor
+from streamlit.components.v1 import html
 
 st.set_page_config(page_title="Miranda Newswire", page_icon="app/static/favicon.jpg", layout="wide")
 st.markdown("""
@@ -86,7 +87,22 @@ height=400,
 initialValue="<p>Hello World</p>",
 toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
 
-st.write(d,unsafe_allow_html=True)
 
-if st.button("Enviar",use_container_width=True):
+style = """
+<style>
+    body {
+        background-color: #f0f2f6;
+        font-family: sans-serif;
+
+    }
+</style>"""
+
+cols = st.columns([0.8,0.2])
+
+if d is not None and cols[1].button("Preview",use_container_width=True):
+    st.markdown('<h3 style="color: #ffffff;"> Preview </h3>', unsafe_allow_html=True)
+    st.divider()
+    html(style+d, height=400,scrolling=True)
+
+if cols[0].button("Enviar",use_container_width=True):
     pass
