@@ -1,11 +1,15 @@
 import streamlit as st
 from st_tiny_editor import  tiny_editor
-from streamlit.components.v1 import html
-
+from streamlit.components.v1 import html as render_html
+import xml.etree.ElementTree as gfg
+from lxml import html
+import datetime
 st.set_page_config(page_title="Miranda Newswire", page_icon="app/static/favicon.jpg", layout="wide")
 st.markdown("""
 <style>
     #MainMenu, header {visibility: hidden;}
+    button[title="View fullscreen"]{
+    visibility: hidden;}
     .bg {
         background-image: linear-gradient(260deg, #002354 0%, #1F4B9E 100%);
 		opacity: 0.95;
@@ -23,6 +27,97 @@ st.markdown("""
 </style>
 <div class="bg"></div>
 """, unsafe_allow_html=True)
+
+
+
+def iter_html(html,parent=None):
+    if parent is None:
+        parent = gfg.Element("html")
+    for tag in html.iterchildren():
+        data = gfg.Element(tag.tag)
+        data.text = tag.text
+        parent.append(data)
+        iter_html(tag,data)
+    return parent
+
+def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
+    xml = gfg.Element("item")
+    ttype = gfg.Element("type")
+    xml.append(ttype)
+    ttype.text = "ARTICLE"
+    if empresa == "Bloomberg":
+        if action == "UPSERT Bloomberg":
+            ac = gfg.Element("action")
+            xml.append(ac)
+            ac.text = "UPSERT"
+        elif action == "DELETE Bloomberg":
+            ac = gfg.Element("action")
+            xml.append(ac)
+            ac.text = "DELETE"
+    elif empresa == "Refinitiv":
+        if action == "CREATE Refinitiv":
+            ac = gfg.Element("action")
+            xml.append(ac)
+            ac.text = "CREATE"
+        elif action == "UPDATE Refinitiv":
+            ac = gfg.Element("action")
+            xml.append(ac)
+            ac.text = "UPDATE"
+        elif action == "DELETE Refinitiv":
+            ac = gfg.Element("action")
+            xml.append(ac)
+            ac.text = "DELETE"
+    guid = gfg.Element("guid")
+    xml.append(guid)
+    pubdate = gfg.Element("pubDate")
+    pubdate.text = fecha.strftime("%a, %d %b %Y %H:%M:%S GMT")
+    xml.append(pubdate)
+    title = gfg.Element("title")
+    xml.append(title)
+    title.text = titulo
+    htmll = gfg.Element("htmltext")
+    xml.append(htmll)
+
+
+    content = html.fromstring(contenido)
+
+    iter_html(content,htmll)
+    if empresa == "Bloomberg":
+        if action == "UPSERT Bloomberg":
+            linkk = gfg.Element("links")
+            xml.append(linkk)
+            li = gfg.Element("link")
+            linkk.append(li)
+            li.text = link
+            li.attrib = {'type':'html','mime':'text/html'}
+
+
+    lang = gfg.Element("language")
+    xml.append(lang)
+    lang.text = 'ES' if idioma == "Español" else 'EN'
+    country = gfg.Element("country")
+    xml.append(country)
+    country.text = 'MX'
+    agency = gfg.Element("agency")
+    xml.append(agency)
+    agency.text = "Miranda Newswire"
+    compans = gfg.Element("companies")
+    xml.append(compans)
+    com = gfg.Element("company")
+    compans.append(com)
+    compp = company.split(":")
+    com.attrib = {'name':compp[1]}
+    isn = gfg.Element("isin")
+    compans.append(isn)
+    isn.text = compp[0]
+
+
+    return gfg.tostring(xml)
+
+
+
+
+
 
 with open("app/static/logo.png", "rb") as image_file:
     st.image(image_file.read(),width=400)
@@ -79,7 +174,7 @@ dicval = {"Alfa":"MXP000511016:Alfa",
 
 company = st.selectbox("Compañía:", ["Seleccione"]+list(dicval.keys()))
 
-action = st.selectbox("Acción:", ["Seleccione",'Upsert Bloomberg','Delete Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
+action = st.selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
 
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
@@ -103,7 +198,13 @@ if cols[1].button("Preview",use_container_width=True):
     if d is not None and d != "":
         st.markdown('<h3 style="color: #ffffff;"> Preview </h3>', unsafe_allow_html=True)
         st.divider()
-        html(style+d, height=400,scrolling=True)
+        render_html(style+d, height=400,scrolling=True)
 
 if cols[0].button("Enviar",use_container_width=True):
-    pass
+    if empresa == "Seleccione" or titulo == "" or fecha == "" or idioma == "Seleccione" or link == "" or company == "Seleccione" or action == "Seleccione" or d == "":
+        st.error("Por favor llene todos los campos")
+        st.stop()
+    xml = create_xml(empresa,titulo,fecha,idioma,link,dicval[company],action,d)
+    today = datetime.date.today().strftime("%a, %d %b %Y %H:%M:%S GMT")
+    st.download_button('Descargar XML', xml, f"newswire_{today.replace(' ','_')}.xml", "xml",use_container_width=True)
+    st.balloons()
