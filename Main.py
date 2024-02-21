@@ -1,4 +1,5 @@
 import streamlit as st
+from st_tiny_editor import  tiny_editor
 
 st.set_page_config(page_title="Miranda Newswire", page_icon="app/static/favicon.jpg", layout="wide")
 st.markdown("""
@@ -80,8 +81,12 @@ company = st.selectbox("Compañía:", ["Seleccione"]+list(dicval.keys()))
 action = st.selectbox("Acción:", ["Seleccione",'Upsert Bloomberg','Delete Bloomberg','CREATE Refinitiv','UPDATE Refinitiv','DELETE Refinitiv'])
 
 
+d = tiny_editor(st.secrets["TINY_API_KEY"],
+height=400,
+initialValue="<p>Hello World</p>",
+toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
 
-st.text_area("Cuerpo:", height=200)
+st.write(d,unsafe_allow_html=True)
 
 if st.button("Enviar",use_container_width=True):
     pass

@@ -4,5 +4,3 @@ backgroundColor="#ECECEC"
 secondaryBackgroundColor="#E7E7E7"
 textColor="#686868"
 
-[server]
-enableStaticServing = true
