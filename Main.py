@@ -4,6 +4,9 @@ from streamlit.components.v1 import html as render_html
 import xml.etree.ElementTree as gfg
 from lxml import html
 import datetime
+
+#Terminar de implementar el código de las pruebas unitarias
+
 st.set_page_config(page_title="Miranda Newswire", page_icon="app/static/favicon.jpg", layout="wide")
 st.markdown("""
 <style>
@@ -69,6 +72,7 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
             ac.text = "DELETE"
     guid = gfg.Element("guid")
     xml.append(guid)
+    guid.text = 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
     pubdate = gfg.Element("pubDate")
     pubdate.text = fecha.strftime("%a, %d %b %Y %H:%M:%S GMT")
     xml.append(pubdate)
@@ -188,7 +192,6 @@ idioma = c2[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
 height=600,
-initialValue="<p>Hello World</p>",
 toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
 
 
@@ -203,7 +206,7 @@ style = """
 
 cols = st.columns([0.8,0.2])
 
-if cols[1].button("Preview",use_container_width=True):
+if cols[1].button("Preview",use_container_width=True,help='Vista previa del artículo.' if  d is not None and d != "" else 'Ingrese el contenido del artículo.'):
     if d is not None and d != "":
         st.markdown('<h3 style="color: #ffffff;"> Preview </h3>', unsafe_allow_html=True)
         st.divider()
