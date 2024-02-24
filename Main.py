@@ -104,7 +104,7 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
         if action == "CREATE Refinitiv":
             ipubdate = gfg.Element("firstCreated")
             xml.append(ipubdate)
-            ipubdate.text = fecha.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ipubdate.text = fecha.strftime("%Y-%m-%dT%H:%M:%S+0000")
 
     title = gfg.Element("title")
     xml.append(title)
@@ -178,7 +178,7 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
             copy = gfg.Element("copyrightNotice")
             rights.append(copy)
             copy.text = "(c)Copyright 2020 Miranda IR, all rights reserved."
-
+            xml.append(rights)
 
     return gfg.tostring(xml)
 
