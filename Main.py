@@ -69,6 +69,7 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
             ac = gfg.Element("action")
             xml.append(ac)
             ac.text = "UPSERT"
+
         elif action == "DELETE Bloomberg":
             ac = gfg.Element("action")
             xml.append(ac)
@@ -90,8 +91,21 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
     xml.append(guid)
     guid.text = 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
     pubdate = gfg.Element("pubDate")
-    pubdate.text = fecha.strftime("%a, %d %b %Y %H:%M:%S GMT")
+    pubdate.text = fecha.strftime("%a, %d %b %Y %H:%M:%S UTC")
     xml.append(pubdate)
+
+    if empresa == "Bloomberg":
+        if action == "UPSERT Bloomberg":
+            ipubdate = gfg.Element("isoDate")
+            xml.append(ipubdate)
+            ipubdate.text = fecha.strftime("%Y-%m-%dT%H:%M:%S+0000")
+
+    elif empresa == "Refinitiv":
+        if action == "CREATE Refinitiv":
+            ipubdate = gfg.Element("firstCreated")
+            xml.append(ipubdate)
+            ipubdate.text = fecha.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
     title = gfg.Element("title")
     xml.append(title)
     title.text = titulo
@@ -101,9 +115,13 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
 
     content = html.fromstring(contenido)
 
+
     iter_html(content,htmll)
     if empresa == "Bloomberg":
         if action == "UPSERT Bloomberg":
+            signature = gfg.Element("signature")
+            xml.append(signature)
+            signature.text = "MNW"
             linkk = gfg.Element("links")
             xml.append(linkk)
             li = gfg.Element("link")
@@ -112,12 +130,22 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
             li.attrib = {'type':'html','mime':'text/html'}
 
 
+
     lang = gfg.Element("language")
     xml.append(lang)
     lang.text = 'ES' if idioma == "Español" else 'EN'
-    country = gfg.Element("country")
-    xml.append(country)
-    country.text = 'MX'
+    if empresa == "Bloomberg":
+        if action == "UPSERT Bloomberg":
+            countries = gfg.Element("countries")
+            xml.append(countries)
+            country = gfg.Element("country")
+            countries.append(country)
+            country.text = 'MX'
+    elif empresa == "Refinitiv":
+        if action == "CREATE Refinitiv":
+            country = gfg.Element("country")
+            xml.append(country)
+            country.text = 'MX'
     agency = gfg.Element("agency")
     xml.append(agency)
     agency.text = "Miranda Newswire"
@@ -130,6 +158,26 @@ def create_xml(empresa,titulo,fecha,idioma,link,company,action,contenido):
     isn = gfg.Element("isin")
     compans.append(isn)
     isn.text = compp[0]
+
+    if empresa == "Bloomberg":
+        if action == "UPSERT Bloomberg":
+            tags = gfg.Element("socialtags")
+            xml.append(tags)
+            t1 = gfg.Element("socialtag")
+            tags.append(t1)
+            t1.text = "fx"
+            t2 = gfg.Element("socialtag")
+            tags.append(t2)
+            t2.text = "macro"
+    elif empresa == "Refinitiv":
+        if action == "CREATE Refinitiv":
+            rights  = gfg.Element("rightsInfo")
+            n = gfg.Element("name")
+            rights.append(n)
+            n.text = "Miranda IR"
+            copy = gfg.Element("copyrightNotice")
+            rights.append(copy)
+            copy.text = "(c)Copyright 2020 Miranda IR, all rights reserved."
 
 
     return gfg.tostring(xml)
