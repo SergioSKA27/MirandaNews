@@ -27,6 +27,10 @@ st.markdown("""
         width: 149%;
         height: 100%;
     }
+    iframe {
+        border: 1px;
+        border-radius: 27px;
+    }
 </style>
 <div class="bg"></div>
 """, unsafe_allow_html=True)
