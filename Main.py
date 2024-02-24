@@ -29,7 +29,7 @@ st.markdown("""
     }
     iframe {
         border: 1px;
-        border-radius: 27px;
+        border-radius: 15px;
     }
 </style>
 <div class="bg"></div>
@@ -152,7 +152,7 @@ action = c1[1].selectbox("Acción:", ["Seleccione",'UPSERT Bloomberg','DELETE Bl
 c2 = st.columns(2)
 
 c3 = st.columns(2)
-fecha = c3[0].date_input("Fecha:")
+fecha = c3[0].date_input("Fecha:",value=datetime.datetime.now())
 
 hora = c3[1].time_input("Hora:")
 
