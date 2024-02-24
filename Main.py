@@ -37,12 +37,24 @@ st.markdown("""
 
 
 
-def iter_html(html,parent=None):
+def iter_html(html, parent=None):
+    """
+    Recursively iterates over an HTML element and its children, creating a new HTML element tree.
+
+    Parameters:
+        html (Element): The HTML element to iterate over.
+        parent (Element, optional): The parent element to append the new elements to. Defaults to None.
+
+    Returns:
+        None
+    """
     if parent is None:
         parent = gfg.Element("html")
     for tag in html.iterchildren():
         data = gfg.Element(tag.tag)
         data.text = tag.text
+        if len(tag.attrib) > 0:
+            data.attrib = dict(tag.attrib)
         parent.append(data)
         iter_html(tag,data)
     return parent
@@ -195,8 +207,12 @@ idioma = c2[1].selectbox("Idioma:", ["Seleccione","Inglés","Español"])
 
 
 d = tiny_editor(st.secrets["TINY_API_KEY"],
-height=600,
-toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat')
+    height=600,
+    toolbar = 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+    plugins = ["advlist", "anchor", "autolink", "charmap", "code",
+        "help", "image", "insertdatetime", "link", "lists", "media",
+        "preview", "searchreplace", "table", "visualblocks", "accordion",'emoticons']
+)
 
 
 style = """
